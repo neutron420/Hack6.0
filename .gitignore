@@ -47,7 +47,6 @@ logs/
 app.log
 
 # Data & Cache
-data/
 *.index
 *.texts
 faiss_index*
