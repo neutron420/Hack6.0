@@ -63,12 +63,12 @@ class QAService:
         return "\n\n".join(context_parts)
     
     async def _generate_answer(self, question: str, context: str) -> str:
-        """Generate answer using OpenAI GPT-4"""
+        """Generate answer using OpenAI GPT-3.5-Turbo"""
         try:
             prompt = self._create_prompt(question, context)
             
             response = self.client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-3.5-turbo",  # ← CHANGED FROM gpt-4 TO gpt-3.5-turbo
                 messages=[
                     {
                         "role": "system",
@@ -128,7 +128,7 @@ Answer:"""
         extracted = {}
         
         for category, terms in keywords.items():
-            for term in terms:
+            for category, terms in keywords.items():
                 if term in question_lower:
                     if category not in extracted:
                         extracted[category] = []

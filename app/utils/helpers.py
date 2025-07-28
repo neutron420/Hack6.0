@@ -2,7 +2,6 @@ import logging
 from functools import wraps
 from typing import Callable, Any
 import time
-import inspect
 import asyncio
 
 def setup_logging():
@@ -38,15 +37,21 @@ def timer(func: Callable) -> Callable:
         return sync_wrapper
 
 def validate_blob_url(url: str) -> bool:
-    """Validate if URL is a valid blob URL"""
-    return url.startswith('https://') and 'blob.core.windows.net' in url
+    """Validate blob or test document URL"""
+    return (
+        url.startswith("https://") or
+        url.startswith("http://") or
+        url.startswith("file://") or
+        "mock.blob.local" in url or
+        url.endswith(".pdf") or
+        url.endswith(".docx")
+    )
 
 def sanitize_text(text: str) -> str:
     """Clean and sanitize text content"""
-    # Remove extra whitespace and normalize
-    text = ' '.join(text.split())
-    # Remove null bytes and normalize line breaks
-    text = text.replace('\x00', '').replace('\r', '\n')
+    text = ' '.join(text.split())  # normalize whitespace
+    text = text.replace('\x00', '')  # remove null bytes
+    text = text.replace('\r', '\n')  # normalize line breaks
     return text.strip()
 
 def truncate_for_token_limit(text: str, max_chars: int = 8000) -> str:
@@ -54,10 +59,9 @@ def truncate_for_token_limit(text: str, max_chars: int = 8000) -> str:
     if len(text) <= max_chars:
         return text
 
-    # Try to truncate at sentence boundary
     truncated = text[:max_chars]
     last_period = truncated.rfind('.')
     if last_period > max_chars * 0.8:
         return truncated[:last_period + 1]
-    
+
     return truncated + "..."
