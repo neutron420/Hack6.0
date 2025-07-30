@@ -1,4 +1,7 @@
-from fastapi import FastAPI, HTTPException, Depends, Header, Security
+# app/main.py
+
+import os # <-- Make sure 'os' is imported
+from fastapi import FastAPI, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 from sqlalchemy.orm import Session
@@ -13,7 +16,7 @@ from app.services.clause_matcher import ClauseMatcher
 from app.services.qa_service import QAService
 from app.services.db_service import DatabaseService
 from app.config import settings
-from app.utils.helpers import setup_logging, timer, validate_blob_url, sanitize_text
+from app.utils.helpers import setup_logging, timer, sanitize_text
 
 # Setup logging
 setup_logging()
@@ -35,10 +38,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Define security scheme for Swagger UI
+# Define security scheme
 api_key_header = APIKeyHeader(name="Authorization", auto_error=True)
 
-# Token verification function using Security
 def verify_token(authorization: str = Security(api_key_header)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
@@ -67,29 +69,39 @@ async def run_query_retrieval(
     token: str = Depends(verify_token)
 ):
     try:
-        logger.info(f"Processing request with {len(request.questions)} questions")
+        # The 'documents' field now expects a filename, e.g., "BAJHLIP23020V012223.pdf"
+        filename = request.documents
+        logger.info(f"Processing request for local file: {filename} with {len(request.questions)} questions")
 
-        if not validate_blob_url(request.documents):
-            raise HTTPException(status_code=400, detail="Invalid blob URL")
-
+        if not filename:
+            raise HTTPException(status_code=400, detail="No document filename provided")
+            
         if not request.questions:
             raise HTTPException(status_code=400, detail="No questions provided")
 
+        # --- THIS IS THE KEY CHANGE ---
+        # Construct the full, absolute path to the document in the app/data directory
+        # This makes the path reliable regardless of where you run the server from.
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        local_file_path = os.path.join(base_dir, "data", filename)
+        
         db_service = DatabaseService(db)
 
-        logger.info("Step 1: Processing document from blob URL")
-        document_content, content_hash = await document_service.process_document(request.documents)
+        logger.info(f"Step 1: Processing document from local path: {local_file_path}")
+        # Ensure your DocumentService has a method to handle local paths
+        document_content, content_hash = await document_service.process_document_from_local_path(local_file_path)
         document_content = sanitize_text(document_content)
 
         logger.info("Step 2: Checking document cache")
         document_record = db_service.get_or_create_document(
-            blob_url=request.documents,
+            blob_url=local_file_path, # Use the local path as a unique identifier
             content_hash=content_hash,
             content=document_content
         )
 
         logger.info("Step 3: Building document embeddings")
-        if not embedding_service.texts or embedding_service.texts == []:
+        # This logic correctly rebuilds the index if it's empty for the session
+        if not embedding_service.texts:
             chunks = document_service.chunk_text(document_content)
             embedding_service.build_index(chunks)
 
@@ -106,11 +118,16 @@ async def run_query_retrieval(
         logger.info(f"Successfully processed {len(answers)} answers")
         return QueryResponse(answers=answers)
 
+    except FileNotFoundError as e:
+        logger.error(f"The requested document was not found: {str(e)}")
+        raise HTTPException(status_code=404, detail=f"File not found: {filename}. Ensure it exists in the 'app/data' directory.")
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error processing request: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+# ... (the rest of your main.py file remains the same) ...
 
 @app.get("/health")
 async def health_check():
@@ -123,7 +140,6 @@ async def health_check():
 @app.get("/stats")
 async def get_stats(db: Session = Depends(get_db), token: str = Depends(verify_token)):
     try:
-        db_service = DatabaseService(db)
         document_count = db.query(Document).count()
         qa_session_count = db.query(QASession).count()
 

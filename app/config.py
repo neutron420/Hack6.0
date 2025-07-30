@@ -1,3 +1,4 @@
+# config.py
 import os
 from dotenv import load_dotenv
 
@@ -6,8 +7,8 @@ load_dotenv()
 class Settings:
     # API Configuration
     API_TOKEN = os.getenv("API_TOKEN")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") # <-- ADD THIS LINE
+
     # Database Configuration
     DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://username:password@localhost:5432/hackrx_db")
     
