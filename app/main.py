@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 import logging
 from typing import List
 
-from app.models.database import get_db
+from app.models.database import get_db, Document, QASession
 from app.models.schemas import QueryRequest, QueryResponse
 from app.services.document_service import DocumentService
 from app.services.embedding_service import EmbeddingService
@@ -124,8 +124,8 @@ async def health_check():
 async def get_stats(db: Session = Depends(get_db), token: str = Depends(verify_token)):
     try:
         db_service = DatabaseService(db)
-        document_count = db.query(db_service.db.query(Document).count()).scalar()
-        qa_session_count = db.query(db_service.db.query(QASession).count()).scalar()
+        document_count = db.query(Document).count()
+        qa_session_count = db.query(QASession).count()
 
         return {
             "total_documents": document_count,
