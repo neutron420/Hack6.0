@@ -1,20 +1,12 @@
-Web Framework
 fastapi
 uvicorn[standard]
-
-Database
-sqlalchemy
-psycopg2-binary
-
-AI & Machine Learning
-google-generativeai
+python-dotenv
+pydantic
 sentence-transformers
 faiss-cpu
-
-Document Processing
-pypdf2
-python-docx
-aiohttp
-
-Configuration & Utilities
-python-dotenv
+google-generativeai
+numpy
+tqdm
+httpx
+aiofiles
+psycopg2-binary
