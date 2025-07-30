@@ -1,0 +1,20 @@
+Web Framework
+fastapi
+uvicorn[standard]
+
+Database
+sqlalchemy
+psycopg2-binary
+
+AI & Machine Learning
+google-generativeai
+sentence-transformers
+faiss-cpu
+
+Document Processing
+pypdf2
+python-docx
+aiohttp
+
+Configuration & Utilities
+python-dotenv
