@@ -1,27 +1,22 @@
-# app/services/document_service.py
-
 import os
 import hashlib
 from PyPDF2 import PdfReader
 from docx import Document
 from io import BytesIO
 import logging
-import aiohttp # Keep this for original blob URL functionality
+import aiohttp  # For blob URL support
 
 logger = logging.getLogger(__name__)
 
 class DocumentService:
     def __init__(self):
-        # The session is only needed for downloading from real URLs
         self.session = aiohttp.ClientSession()
 
     async def close(self):
-        """Closes the aiohttp session."""
         if not self.session.closed:
             await self.session.close()
 
     def _extract_text_from_pdf(self, content: bytes) -> str:
-        """Extracts text from PDF bytes."""
         try:
             reader = PdfReader(BytesIO(content))
             text = "".join(page.extract_text() for page in reader.pages if page.extract_text())
@@ -31,7 +26,6 @@ class DocumentService:
             raise
 
     def _extract_text_from_docx(self, content: bytes) -> str:
-        """Extracts text from DOCX bytes."""
         try:
             doc = Document(BytesIO(content))
             text = "\n".join(para.text for para in doc.paragraphs)
@@ -41,22 +35,16 @@ class DocumentService:
             raise
 
     def get_content_hash(self, content: bytes) -> str:
-        """Generates a SHA256 hash for the given content."""
         return hashlib.sha256(content).hexdigest()
 
     def chunk_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
-        """Splits text into overlapping chunks."""
         words = text.split()
         if not words:
             return []
         chunks = [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size - overlap)]
         return chunks
 
-    # --- Method for processing a local file ---
     async def process_document_from_local_path(self, file_path: str) -> tuple[str, str]:
-        """
-        Reads a document from a local file path, extracts text, and returns content and hash.
-        """
         logger.info(f"Processing local file: {file_path}")
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found at specified path: {file_path}")
@@ -79,11 +67,7 @@ class DocumentService:
             logger.error(f"Failed to process local document: {e}")
             raise
 
-    # --- Original Method for processing a blob URL ---
     async def process_document(self, blob_url: str) -> tuple[str, str]:
-        """
-        Downloads a document from a URL, extracts text, and returns content and hash.
-        """
         logger.info(f"Processing document from URL: {blob_url}")
         try:
             async with self.session.get(blob_url) as response:
@@ -103,3 +87,22 @@ class DocumentService:
         except Exception as e:
             logger.error(f"Failed to process document from URL: {e}")
             raise
+
+def load_pdf_text(file_path: str) -> str:
+    """Simple sync wrapper to extract PDF text for training."""
+    from PyPDF2 import PdfReader
+    from io import BytesIO
+
+    try:
+        with open(file_path, "rb") as f:
+            content = f.read()
+
+        if file_path.lower().endswith(".pdf"):
+            reader = PdfReader(BytesIO(content))
+            text = "".join(page.extract_text() for page in reader.pages if page.extract_text())
+            return text.strip()
+        else:
+            raise ValueError("Only PDF supported in load_pdf_text()")
+    except Exception as e:
+        print(f"❌ Failed to extract PDF: {e}")
+        return ""
