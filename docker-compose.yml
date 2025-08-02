@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - .env  # <-- This line tells the API service to use your .env file
     depends_on:
       - db
 
@@ -20,7 +20,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - .env  # <-- This line tells the DB service to use your .env file
 
 volumes:
   postgres_data:
