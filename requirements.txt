@@ -10,3 +10,4 @@ tqdm
 httpx
 aiofiles
 psycopg2-binary
+
