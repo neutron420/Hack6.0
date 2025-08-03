@@ -1,13 +1,73 @@
+# Core FastAPI and server
 fastapi
 uvicorn[standard]
 python-dotenv
 pydantic
+pydantic_core
+
+# AI and ML
 sentence-transformers
 faiss-cpu
 google-generativeai
 numpy
-tqdm
-httpx
-aiofiles
-psycopg2-binary
+torch
+transformers
+tokenizers
+huggingface-hub
+safetensors
 
+# Database
+psycopg2-binary
+sqlalchemy
+greenlet
+
+# HTTP and async
+httpx
+aiohttp
+aiofiles
+anyio
+httpcore
+h11
+sniffio
+
+# Document processing
+PyPDF2
+python-docx
+PyMuPDF
+
+# Utilities
+tqdm
+requests
+click
+typing_extensions
+packaging
+certifi
+charset-normalizer
+urllib3
+idna
+
+# Text processing and NLP
+regex
+joblib
+scipy
+scikit-learn
+threadpoolctl
+
+# Google APIs
+google-api-core
+google-auth
+googleapis-common-protos
+proto-plus
+protobuf
+grpcio
+grpcio-status
+
+# Other dependencies
+six
+python-dateutil
+pytz
+markdown-it-py
+rich
+starlette
+jinja2
+itsdangerous
