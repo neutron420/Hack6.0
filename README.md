@@ -9,14 +9,14 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
 
-[📚 **Documentation**](https://ritesh-singh.gitbook.io/ritesh_singh-docs/deployment) • [🐛 **Issues**](https://github.com/neutron420/HackRx.6.0/issues) • [⭐ **GitHub**](https://github.com/neutron420/HackRx.6.0)
+[📚 **Documentation**](https://ritesh-singh.gitbook.io/ritesh_singh-docs) • [🐛 **Issues**](https://github.com/neutron420/HackRx.6.0/issues) • [⭐ **GitHub**](https://github.com/neutron420/HackRx.6.0)
 
 </div>
 
 
 
 ---
-LLM Query-Retreuval System Docs- (https://ritesh-singh.gitbook.io/ritesh_singh-docs)
+LLM Query-Retreuval System Docs-(https://ritesh-singh.gitbook.io/ritesh_singh-docs)
 ## Overview
 
 HackRx 6.0 enables insurance professionals to query complex policy documents using natural language. Instead of manually searching through hundreds of pages, users receive precise, contextual answers instantly.
