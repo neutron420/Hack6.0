@@ -16,7 +16,7 @@
 
 
 ---
-LLM Query-Retreuval System Docs-(https://ritesh-singh.gitbook.io/ritesh_singh-docs)
+LLM Query-Retreival System Docs-(https://ritesh-singh.gitbook.io/ritesh_singh-docs)
 ## Overview
 
 HackRx 6.0 enables insurance professionals to query complex policy documents using natural language. Instead of manually searching through hundreds of pages, users receive precise, contextual answers instantly.
