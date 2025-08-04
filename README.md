@@ -1,3 +1,5 @@
+<div align="center">
+
 # HackRx 6.0 - Intelligent Insurance Document Q&A Engine
 
 > AI-powered document analysis system that transforms how insurance professionals interact with policy documents through natural language processing.
@@ -8,6 +10,8 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
 
 [📚 **Documentation**](https://ritesh-singh.gitbook.io/ritesh_singh-docs/deployment) • [🐛 **Issues**](https://github.com/neutron420/HackRx.6.0/issues) • [⭐ **GitHub**](https://github.com/neutron420/HackRx.6.0)
+#Docs - (https://ritesh-singh.gitbook.io/ritesh_singh-docs)
+</div>
 
 ---
 
@@ -214,7 +218,7 @@ For detailed deployment instructions and API documentation, visit:
 
 ## Support
 
-- **📧 Email**: fnaticritesh2004@gmail.com
+- **📧 Email**: hackrx2024@gmail.com
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/neutron420/HackRx.6.0/issues)
 - **💬 Discussions**: [GitHub Discussions](https://github.com/neutron420/HackRx.6.0/discussions)
 
