@@ -13,6 +13,8 @@
 #Docs - (https://ritesh-singh.gitbook.io/ritesh_singh-docs)
 </div>
 
+LLM Query-Retreuval System Docs- (https://ritesh-singh.gitbook.io/ritesh_singh-docs)
+
 ---
 
 ## Overview
