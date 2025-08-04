@@ -1,136 +1,52 @@
-<div align="center">
-  
-  # 🤖 HackRx 6.0
-  
-  **Intelligent Insurance Document Q&A Engine**
-  
-  *Revolutionizing how insurance professionals interact with policy documents through AI-powered natural language processing*
-  
-  <br/>
-  
-  [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-  [![FastAPI](https://img.shields.io/badge/FastAPI-0.103-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
-  [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-DB4437?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://sqlalchemy.org)
-  [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org)
-  [![FAISS](https://img.shields.io/badge/FAISS-1.7-4A90E2?style=for-the-badge&logo=facebook&logoColor=white)](https://faiss.ai)
-  
-  <br/>
-  
-  [🚀 **Live Demo**](https://your-demo-link.com) • [📖 **Documentation**](https://your-docs-link.com) • [🐛 **Report Bug**](https://github.com/neutron420/HackRx.6.0/issues) • [✨ **Request Feature**](https://github.com/neutron420/HackRx.6.0/issues)
-  
-</div>
+# HackRx 6.0 - Intelligent Insurance Document Q&A Engine
+
+> AI-powered document analysis system that transforms how insurance professionals interact with policy documents through natural language processing.
+
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
+
+[📚 **Documentation**](https://ritesh-singh.gitbook.io/ritesh_singh-docs/deployment) • [🐛 **Issues**](https://github.com/neutron420/HackRx.6.0/issues) • [⭐ **GitHub**](https://github.com/neutron420/HackRx.6.0)
 
 ---
 
-## 🎯 What is HackRx 6.0?
+## Overview
 
-**HackRx 6.0** transforms the way insurance professionals work with complex policy documents. Instead of manually searching through hundreds of pages, users can simply ask questions in natural language and receive precise, contextual answers instantly.
+HackRx 6.0 enables insurance professionals to query complex policy documents using natural language. Instead of manually searching through hundreds of pages, users receive precise, contextual answers instantly.
 
+**Example:**
 ```
-❓ "What is the coverage limit for water damage?"
-🤖 "The coverage limit for water damage is $50,000 per occurrence, with a $1,000 deductible as specified in Section 4.2.1 of your policy."
+Q: "What is the coverage limit for water damage?"
+A: "The coverage limit for water damage is $50,000 per occurrence, with a $1,000 deductible as specified in Section 4.2.1 of your policy."
 ```
 
-### 🌟 Why Choose HackRx 6.0?
+## Key Features
 
-- **⚡ Lightning Fast**: Get answers in seconds, not hours
-- **🎯 Highly Accurate**: Powered by state-of-the-art NLP models
-- **📚 Multi-Document**: Process multiple policy documents simultaneously  
-- **🔐 Enterprise Ready**: Secure, scalable architecture built for production
-- **🚀 Easy Integration**: RESTful API with comprehensive documentation
+- **Intelligent Processing**: Advanced NLP with semantic similarity matching
+- **Multi-Document Support**: Process multiple policy documents simultaneously
+- **Fast Response Times**: Sub-second query responses with FAISS vector search
+- **Enterprise Security**: Secure API with authentication and input validation
+- **Scalable Architecture**: Docker-ready with PostgreSQL backend
 
----
+## Technology Stack
 
-## 🏗️ Architecture Overview
+| Component | Technology |
+|-----------|------------|
+| **Backend** | FastAPI, Python 3.9+ |
+| **Database** | PostgreSQL 13 with SQLAlchemy |
+| **AI/ML** | Google Gemini 1.5, Sentence Transformers |
+| **Vector Search** | FAISS (Facebook AI Similarity Search) |
+| **Document Processing** | PyPDF2, python-docx |
+| **Deployment** | Docker, Docker Compose |
 
-```mermaid
-graph TB
-    A[Insurance Documents] --> B[PDF Processing Engine]
-    B --> C[Text Extraction & Chunking]
-    C --> D[Sentence Embeddings]
-    D --> E[FAISS Vector Store]
-    F[User Question] --> G[Query Processing]
-    G --> H[Similarity Search]
-    E --> H
-    H --> I[Context Retrieval]
-    I --> J[Answer Generation]
-    J --> K[Structured Response]
-```
-
----
-
-## ✨ Key Features
-
-<table>
-<tr>
-<td>
-
-### 🧠 **Intelligent Processing**
-- Advanced NLP with Sentence-Transformers
-- Context-aware answer generation
-- Multi-document understanding
-- Semantic similarity matching
-
-</td>
-<td>
-
-### ⚡ **High Performance**
-- FAISS-powered vector search
-- Optimized document chunking
-- Efficient caching mechanisms
-- Sub-second response times
-
-</td>
-</tr>
-<tr>
-<td>
-
-### 🔒 **Enterprise Security**
-- Secure API endpoints
-- Input validation & sanitization
-- Rate limiting & authentication
-- Audit logging capabilities
-
-</td>
-<td>
-
-### 📈 **Scalable Design**
-- Microservices architecture
-- Horizontal scaling support
-- Database optimization
-- Load balancing ready
-
-</td>
-</tr>
-</table>
-
----
-
-## 🛠️ Technology Stack
-
-### **Core Technologies**
-- **🐍 Backend**: FastAPI (Modern, fast Python web framework)
-- **🗄️ Database**: PostgreSQL with SQLAlchemy ORM
-- **🧠 AI/ML**: PyTorch, Hugging Face Transformers, Sentence-Transformers
-- **🔍 Search**: FAISS (Facebook AI Similarity Search)
-- **📄 Processing**: PyMuPDF for PDF text extraction
-
-### **AI Models**
-- **Embeddings**: `all-MiniLM-L6-v2` (Optimized for semantic similarity)
-- **QA Model**: `distilbert-base-uncased` (Efficient question answering)
-- **Vector Similarity**: FAISS L2 distance with IVF indexing
-
----
-
-## 🚀 Quick Start Guide
+## Quick Start
 
 ### Prerequisites
-- Python 3.8+ 
-- PostgreSQL 13+
+- Docker and Docker Compose
 - 4GB+ RAM recommended
 
-### 🔧 Installation
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -138,214 +54,174 @@ graph TB
    cd HackRx.6.0
    ```
 
-2. **Set up virtual environment**
+2. **Configure environment**
    ```bash
-   python -m venv hackrx_env
-   
-   # Windows
-   hackrx_env\Scripts\activate
-   
-   # macOS/Linux  
-   source hackrx_env/bin/activate
+   cp .env.dev .env
+   # Update API keys in .env file
    ```
 
-3. **Install dependencies**
+3. **Start with Docker**
    ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - API Documentation: http://localhost:8000/docs
+   - Health Check: http://localhost:8000/health
+
+### Manual Installation
+
+<details>
+<summary>Click to expand manual setup instructions</summary>
+
+1. **Set up Python environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-4. **Configure environment**
+2. **Set up PostgreSQL**
    ```bash
-   cp .env.example .env
-   # Edit .env with your database credentials
+   # Install PostgreSQL 13+
+   # Create database: hackrx_db
+   # Run migrations from migrations/__init__.sql
    ```
 
-5. **Initialize database**
+3. **Configure environment variables**
    ```bash
-   python -m db.init_db
+   export API_TOKEN="your-api-token"
+   export GOOGLE_API_KEY="your-google-api-key"
+   export DATABASE_URL="postgresql://user:pass@localhost:5432/hackrx_db"
    ```
 
-6. **Start the server**
+4. **Start the server**
    ```bash
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   uvicorn app.main:app --host 0.0.0.0 --port 8000
    ```
 
-7. **Access the API**
-   - 📚 Interactive Docs: http://localhost:8000/docs
-   - 🔧 ReDoc: http://localhost:8000/redoc
-   - 🌐 Health Check: http://localhost:8000/health
+</details>
 
----
+## API Usage
 
-## 📖 API Usage Examples
+### Upload and Query Documents
 
-### Upload Documents
 ```bash
-curl -X POST "http://localhost:8000/documents/upload" \
-  -H "Content-Type: multipart/form-data" \
-  -F "files=@policy1.pdf" \
-  -F "files=@policy2.pdf"
-```
-
-### Ask Questions
-```bash
-curl -X POST "http://localhost:8000/questions/ask" \
+# Query documents (place PDF files in app/data/ directory)
+curl -X POST "http://localhost:8000/hackrx/run" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "question": "What is the deductible for comprehensive coverage?",
-    "document_ids": ["doc1", "doc2"]
+    "documents": "policy_document.pdf",
+    "questions": [
+      "What is the deductible for comprehensive coverage?",
+      "What are the exclusions for water damage?"
+    ]
   }'
 ```
 
 ### Response Format
+
 ```json
 {
-  "answer": "The deductible for comprehensive coverage is $500 as outlined in Section 3.1.2.",
-  "confidence": 0.92,
-  "source_documents": ["policy_comprehensive.pdf"],
-  "relevant_sections": ["Section 3.1.2", "Section 3.1.3"],
-  "processing_time": "0.34s"
+  "answers": [
+    "The deductible for comprehensive coverage is $500 as outlined in Section 3.1.2.",
+    "Water damage exclusions include gradual leaks, floods, and sewage backup as specified in Section 4.3."
+  ]
 }
 ```
 
----
+## Architecture
 
-## 🧪 Testing
+```
+Documents (PDF/DOCX) → Text Extraction → Chunking → Embeddings → FAISS Index
+                                                                       ↓
+User Query → Query Processing → Similarity Search → Context Retrieval → LLM → Answer
+```
 
-Run the comprehensive test suite:
+## Configuration
+
+Key environment variables:
 
 ```bash
-# Unit tests
-pytest tests/unit/ -v
+# Required
+API_TOKEN=your-secure-api-token
+GOOGLE_API_KEY=your-google-api-key
+DATABASE_URL=postgresql://user:pass@host:port/db
 
-# Integration tests  
-pytest tests/integration/ -v
-
-# Performance tests
-pytest tests/performance/ -v
-
-# Generate coverage report
-pytest --cov=app --cov-report=html
+# Optional
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+FAISS_INDEX_PATH=./data/faiss_index
+DEBUG=False
+LOG_LEVEL=INFO
 ```
 
----
+## Performance Metrics
 
-## 🏆 Team
+| Metric | Performance |
+|--------|-------------|
+| Average Response Time | < 500ms |
+| Document Processing | 50 pages/second |
+| Concurrent Users | 1000+ |
+| Answer Accuracy | 94.5% |
 
-Meet the brilliant minds behind HackRx 6.0:
+## Development
 
-<div align="center">
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/ashutosh7484">
-        <br />
-        <sub><b>Ashutosh Kumar</b></sub>
-        <br />
-        <sub>🧠 AI/ML Engineer</sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/archita-debug">
-        <br />
-        <sub><b>Archita Sharma</b></sub>
-        <br />
-        <sub>⚡ Backend Developer</sub>
-      </a>
-    </td>
-  </tr>
-</table>
-</div>
+### Running Tests
 
----
+```bash
+# Install development dependencies
+pip install pytest pytest-cov
 
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-### 🎯 Ways to Contribute
-- 🐛 **Bug Reports**: Found an issue? Let us know!
-- ✨ **Feature Requests**: Have an idea? We'd love to hear it!
-- 📖 **Documentation**: Help improve our docs
-- 🧪 **Testing**: Add test cases and improve coverage
-- 💻 **Code**: Submit pull requests for new features or fixes
-
-### 📋 Contribution Process
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### 🏷️ Commit Convention
-```
-feat: add new document processing endpoint
-fix: resolve memory leak in vector search
-docs: update API documentation
-test: add unit tests for question processing
+# Run tests
+pytest tests/ -v --cov=app
 ```
 
----
-
-## 📊 Performance Metrics
-
-| Metric | Value |
-|--------|-------|
-| **Average Response Time** | < 500ms |
-| **Document Processing** | 50 pages/second |
-| **Concurrent Users** | 1000+ |
-| **Answer Accuracy** | 94.5% |
-| **Uptime** | 99.9% |
-
----
-
-## 🗺️ Roadmap
-
-### 🎯 Current Sprint (v1.1)
-- [ ] Multi-language support (Hindi, Regional languages)
-- [ ] Advanced analytics dashboard
-- [ ] Batch processing capabilities
-- [ ] Enhanced error handling
-
-### 🚀 Future Features (v2.0)
-- [ ] Voice-to-text question input
-- [ ] Integration with popular insurance platforms
-- [ ] Machine learning model fine-tuning
-- [ ] Real-time collaboration features
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+### Project Structure
 
 ```
-MIT License - Feel free to use this project for personal and commercial purposes!
+├── app/
+│   ├── models/          # Database models and schemas
+│   ├── services/        # Business logic services
+│   ├── utils/           # Utility functions
+│   ├── data/           # Document storage
+│   └── main.py         # FastAPI application
+├── migrations/         # Database migrations
+├── tests/             # Test files
+├── docker-compose.yml # Docker configuration
+└── requirements.txt   # Python dependencies
 ```
 
----
+## Team
 
-## 🙏 Acknowledgments
+| Role | Contributor |
+|------|-------------|
+| **AI/ML Engineer** | [Ashutosh Kumar](https://github.com/ashutosh7484) |
+| **Backend Developer** | [Archita Sharma](https://github.com/archita-debug) |
 
-- **Hugging Face** for providing excellent pre-trained models
-- **FastAPI** team for the amazing web framework
-- **Facebook AI** for the FAISS similarity search library
-- **Insurance Industry Partners** for valuable feedback and testing
+## Contributing
 
----
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📞 Support & Contact
+## Documentation
 
-**Need Help?** We're here for you!
+For detailed deployment instructions and API documentation, visit:
+**[📚 Complete Documentation](https://ritesh-singh.gitbook.io/ritesh_singh-docs/deployment)**
 
-- **📧 Email**: hackrx2024@gmail.com
-- **🐛 Issues**: [GitHub Issues](https://github.com/neutron420/HackRx.6.0/issues)
+## Support
+
+- **📧 Email**: fnaticritesh2004@gmail.com
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/neutron420/HackRx.6.0/issues)
 - **💬 Discussions**: [GitHub Discussions](https://github.com/neutron420/HackRx.6.0/discussions)
 
-**Project Repository**: [github.com/neutron420/HackRx.6.0](https://github.com/neutron420/HackRx.6.0)
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-<div align="center">
-  <sub>Built with ❤️ by the HackRx team for the insurance industry</sub>
-</div>
+**Built with ❤️ for the insurance industry**
