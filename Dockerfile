@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies required for some Python packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     && apt-get clean \
@@ -21,12 +21,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy your application code into the container
 COPY ./app ./app
+# --- ADD THIS LINE ---
+# This makes the training script available for import by main.py
+COPY train_embeddings.py .
 
-# Create data directory for documents
+# Create data directory for documents (already correct)
 RUN mkdir -p /app/data
 
-# Expose the port your application will run on (8000)
+# Expose the port (already correct)
 EXPOSE 8000
 
-# The command to run your app using uvicorn
+# The command to run your app (already correct)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

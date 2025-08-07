@@ -1,12 +1,16 @@
 # app/main.py
 
-import os # <-- Make sure 'os' is imported
+import os
 from fastapi import FastAPI, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 from sqlalchemy.orm import Session
 import logging
 from typing import List
+# --- MODIFICATION START: Import necessary libraries ---
+from contextlib import asynccontextmanager
+from train_embeddings import chunk_text # Import chunking logic
+# --- MODIFICATION END ---
 
 from app.models.database import get_db, Document, QASession
 from app.models.schemas import QueryRequest, QueryResponse
@@ -22,14 +26,70 @@ from app.utils.helpers import setup_logging, timer, sanitize_text
 setup_logging()
 logger = logging.getLogger(__name__)
 
-# Initialize FastAPI app
+# Initialize services (These remain the same)
+document_service = DocumentService()
+embedding_service = EmbeddingService()
+clause_matcher = ClauseMatcher(embedding_service)
+qa_service = QAService(clause_matcher)
+
+
+# --- MODIFICATION START: Add a lifespan manager to load data on startup ---
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    This function runs once when the application starts. It finds all PDF documents,
+    processes them, and builds the FAISS vector index (the AI's knowledge base).
+    This ensures the data is ready before any questions are received.
+    """
+    logger.info("Application starting up... Initializing the knowledge base.")
+    
+    # Define the path to your data directory
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(base_dir, "data")
+    
+    pdf_files = [f for f in os.listdir(data_dir) if f.endswith(".pdf")]
+    
+    if not pdf_files:
+        logger.warning("No PDF files found in app/data/. The Q&A service will have no knowledge.")
+    else:
+        logger.info(f"Found {len(pdf_files)} documents to process.")
+        all_chunks = []
+        # Process each PDF file
+        for filename in pdf_files:
+            file_path = os.path.join(data_dir, filename)
+            try:
+                text, _ = await document_service.process_document_from_local_path(file_path)
+                if text:
+                    chunks = chunk_text(sanitize_text(text), chunk_size=500, overlap=50)
+                    all_chunks.extend(chunks)
+                    logger.info(f"Processed {filename}, created {len(chunks)} chunks.")
+            except Exception as e:
+                logger.error(f"Failed to process {filename}: {e}")
+
+        # Build the index ONCE with all chunks
+        if all_chunks:
+            logger.info(f"Building FAISS index with {len(all_chunks)} total chunks...")
+            embedding_service.build_index(all_chunks)
+            logger.info("FAISS index built successfully. Application is ready to receive queries.")
+        else:
+            logger.warning("No text chunks were generated. The index remains empty.")
+    
+    yield
+    # Code below this 'yield' runs on shutdown
+    logger.info("Shutting down LLM-Powered Query-Retrieval System")
+    await document_service.close()
+# --- MODIFICATION END ---
+
+
+# Initialize FastAPI app with the new lifespan manager
 app = FastAPI(
     title="LLM-Powered Query-Retrieval System",
     description="Intelligent document Q&A system for insurance, legal, HR, and compliance domains",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan # <-- This tells FastAPI to run the startup logic
 )
 
-# Add CORS middleware
+# ... (Your CORS middleware and security functions remain unchanged) ...
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -37,30 +97,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Define security scheme
 api_key_header = APIKeyHeader(name="Authorization", auto_error=True)
-
 def verify_token(authorization: str = Security(api_key_header)):
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
-    
     token = authorization.split(" ")[1]
     if token != settings.API_TOKEN:
         raise HTTPException(status_code=401, detail="Invalid API token")
-    
     return token
-
-# Initialize services
-document_service = DocumentService()
-embedding_service = EmbeddingService()
-clause_matcher = ClauseMatcher(embedding_service)
-qa_service = QAService(clause_matcher)
 
 @app.get("/")
 async def root():
     return {"message": "LLM-Powered Query-Retrieval System is running"}
 
+
+# --- MODIFICATION START: Simplify the main endpoint ---
 @app.post("/hackrx/run", response_model=QueryResponse)
 @timer
 async def run_query_retrieval(
@@ -68,47 +119,36 @@ async def run_query_retrieval(
     db: Session = Depends(get_db),
     token: str = Depends(verify_token)
 ):
+    """
+    This endpoint now only handles answering questions. It uses the knowledge
+    base that was built during startup, making it much faster.
+    """
     try:
-        # The 'documents' field now expects a filename, e.g., "BAJHLIP23020V012223.pdf"
         filename = request.documents
-        logger.info(f"Processing request for local file: {filename} with {len(request.questions)} questions")
+        logger.info(f"Processing request for file: {filename} with {len(request.questions)} questions")
 
-        if not filename:
-            raise HTTPException(status_code=400, detail="No document filename provided")
-            
-        if not request.questions:
-            raise HTTPException(status_code=400, detail="No questions provided")
+        if not embedding_service.index or not embedding_service.texts:
+            raise HTTPException(
+                status_code=503, 
+                detail="Knowledge base is not initialized. Check server startup logs."
+            )
 
-        # --- THIS IS THE KEY CHANGE ---
-        # Construct the full, absolute path to the document in the app/data directory
-        # This makes the path reliable regardless of where you run the server from.
+        # We still need to read the specific document's content for the LLM's context
         base_dir = os.path.dirname(os.path.abspath(__file__))
         local_file_path = os.path.join(base_dir, "data", filename)
         
-        db_service = DatabaseService(db)
-
-        logger.info(f"Step 1: Processing document from local path: {local_file_path}")
-        # Ensure your DocumentService has a method to handle local paths
         document_content, content_hash = await document_service.process_document_from_local_path(local_file_path)
-        document_content = sanitize_text(document_content)
-
-        logger.info("Step 2: Checking document cache")
-        document_record = db_service.get_or_create_document(
-            blob_url=local_file_path, # Use the local path as a unique identifier
-            content_hash=content_hash,
-            content=document_content
-        )
-
-        logger.info("Step 3: Building document embeddings")
-        # This logic correctly rebuilds the index if it's empty for the session
-        if not embedding_service.texts:
-            chunks = document_service.chunk_text(document_content)
-            embedding_service.build_index(chunks)
-
-        logger.info("Step 4: Processing questions with LLM")
+        
+        logger.info("Step 1: Answering questions using the pre-built index...")
         answers = await qa_service.answer_questions(request.questions, document_content)
 
-        logger.info("Step 5: Storing Q&A session")
+        logger.info("Step 2: Storing Q&A session")
+        db_service = DatabaseService(db)
+        document_record = db_service.get_or_create_document(
+            blob_url=local_file_path,
+            content_hash=content_hash,
+            content=sanitize_text(document_content)
+        )
         qa_session = db_service.create_qa_session(
             document_id=document_record.id,
             questions=request.questions,
@@ -118,17 +158,16 @@ async def run_query_retrieval(
         logger.info(f"Successfully processed {len(answers)} answers")
         return QueryResponse(answers=answers)
 
-    except FileNotFoundError as e:
-        logger.error(f"The requested document was not found: {str(e)}")
-        raise HTTPException(status_code=404, detail=f"File not found: {filename}. Ensure it exists in the 'app/data' directory.")
-    except HTTPException:
-        raise
+    except FileNotFoundError:
+        logger.error(f"The requested document was not found: {filename}")
+        raise HTTPException(status_code=404, detail=f"File not found: {filename}.")
     except Exception as e:
         logger.error(f"Error processing request: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+# --- MODIFICATION END ---
 
-# ... (the rest of your main.py file remains the same) ...
 
+# ... (The rest of your file: /health, /stats, and startup/shutdown events can be removed or simplified) ...
 @app.get("/health")
 async def health_check():
     return {
@@ -142,7 +181,6 @@ async def get_stats(db: Session = Depends(get_db), token: str = Depends(verify_t
     try:
         document_count = db.query(Document).count()
         qa_session_count = db.query(QASession).count()
-
         return {
             "total_documents": document_count,
             "total_qa_sessions": qa_session_count,
@@ -152,16 +190,7 @@ async def get_stats(db: Session = Depends(get_db), token: str = Depends(verify_t
         logger.error(f"Error getting stats: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to get system stats")
 
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Starting LLM-Powered Query-Retrieval System")
-    logger.info(f"Using embedding model: {settings.EMBEDDING_MODEL}")
-    logger.info(f"FAISS index path: {settings.FAISS_INDEX_PATH}")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Shutting down LLM-Powered Query-Retrieval System")
-    await document_service.close()
+# The old @app.on_event("startup") and @app.on_event("shutdown") are now replaced by the lifespan manager
 
 if __name__ == "__main__":
     import uvicorn
