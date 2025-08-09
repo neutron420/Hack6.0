@@ -26,6 +26,12 @@ services:
       context: ./fe
     ports:
       - "3000:3000"
+    volumes:
+      - ./fe:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
     restart: always
     depends_on:
       - api
