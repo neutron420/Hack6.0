@@ -1,25 +1,18 @@
-FROM node:20-alpine AS builder
+FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm ci
 
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY . .
 
-RUN npm run build
+# Expose ports (3000 for Next.js, 24678 for HMR WebSocket)
+EXPOSE 3000 24678
 
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-EXPOSE 3000
-
-CMD ["npm", "run" ,"dev"]
+# Start development server
+CMD ["npm", "run", "dev"]
