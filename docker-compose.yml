@@ -1,13 +1,12 @@
 version: '3.8'
 
 services:
-  # The FastAPI Application Service
   api:
     build: .
     ports:
       - "8000:8000"
     volumes:
-      - ./data:/app/data  # Mount data directory for FAISS index
+      - ./data:/app/data
     environment:
       - API_TOKEN=1a5b1c0362c90fb6eec9c783fb472205be7ef3a73e5384587e097919083252ea
       - GOOGLE_API_KEY=AIzaSyBUu4gMtW-IIqTDEcmnQGBCCXyWQ5W4BaI
@@ -19,8 +18,20 @@ services:
     depends_on:
       - db
     restart: unless-stopped
+    networks:
+      - app-network
 
-  # The Local PostgreSQL Database Service
+  frontend:
+    build:
+      context: ./fe
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - app-network
+
   db:
     image: postgres:13
     volumes:
@@ -30,8 +41,14 @@ services:
       - POSTGRES_USER=hackrx_user
       - POSTGRES_PASSWORD=hackrx_password
     ports:
-      - "5432:5432"  # Expose for external access if needed
+      - "5432:5432"
     restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
