@@ -5,6 +5,7 @@ import { QAForm } from '@/components/QAForm';
 import { ResultsDisplay } from '@/components/ResultsDisplay';
 import { fetchAnswers, QAResponse } from '@/services/api';
 import { Brain, Shield, Zap, Users, Github, Mail, Heart } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 
 const documents = [
   'CHOTGDP23004V012223.pdf',
@@ -45,6 +46,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden">
+      {/* Navbar */}
+      <Navbar />
+
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -71,7 +75,7 @@ export default function Home() {
         <div className="flex-grow p-4 sm:p-8">
           <div className="w-full max-w-7xl mx-auto">
             {/* Hero Section */}
-            <header className="text-center mb-12 pt-8">
+            <header className="text-center mb-12 pt-16">
               <div className="inline-flex items-center space-x-3 mb-6">
                 <div className="p-3 bg-indigo-100 rounded-2xl">
                   <Brain className="w-8 h-8 text-indigo-600" />
