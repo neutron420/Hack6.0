@@ -27,13 +27,17 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      # This correctly maps your local code to the container
       - ./fe:/app
-      - /app/node_modules # Prevents host node_modules from overwriting container's
+      # These prevent local folders from overwriting the container's versions
+      - /app/node_modules
+      - /app/.next
     environment:
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true # This enables polling for file changes
-    stdin_open: true # Keeps the container running in dev mode
-    tty: true
+      # This is the key to fixing hot-reloading in Docker on Windows
+      - CHOKIDAR_USEPOLLING=true
+    # The command is now handled by the Dockerfile, which is more efficient
+    restart: always
     depends_on:
       - api
     networks:
